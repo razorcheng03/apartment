@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  role      String   // 'ADMIN' | 'RESIDENT'
+  unit      String?
+  requests  MaintenanceRequest[]
+  payments  Payment[]
+  announcementsRead AnnouncementRead[]
+}
+
+model Unit {
+  id           String  @id @default(cuid())
+  number       String  @unique
+  floor        String
+  type         String
+  status       String  // 'OCCUPIED' | 'VACANT' | 'MAINTENANCE'
+  residentName String?
+}
+
+model MaintenanceRequest {
+  id           String   @id @default(cuid())
+  residentId   String
+  resident     User     @relation(fields: [residentId], references: [id])
+  unit         String
+  title        String
+  description  String
+  category     String   // 'Plumbing' | 'Electrical' | 'HVAC' | 'Appliance' | 'Carpentry' | 'Other'
+  status       String   @default("PENDING") // 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED'
+  date         String
+  priority     String   // 'LOW' | 'MEDIUM' | 'HIGH'
+  createdAt    DateTime @default(now())
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  category  String   // 'General' | 'Urgent' | 'Event' | 'Maintenance'
+  date      String
+  author    String
+  isPinned  Boolean  @default(false)
+  readBy    AnnouncementRead[]
+}
+
+model AnnouncementRead {
+  id             String       @id @default(cuid())
+  announcementId String
+  announcement   Announcement @relation(fields: [announcementId], references: [id])
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
+
+  @@unique([announcementId, userId])
+}
+
+model Payment {
+  id           String   @id @default(cuid())
+  residentId   String
+  resident     User     @relation(fields: [residentId], references: [id])
+  amount       Float
+  date         String
+  status       String   // 'PAID' | 'PENDING' | 'OVERDUE'
+  type         String   // 'RENT' | 'UTILITIES' | 'MAINTENANCE'
+}

@@ -13,7 +13,9 @@ export interface MaintenanceRequest {
     residentName: string;
     unit: string;
     title: string;
-    status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+    description: string;
+    category: 'Plumbing' | 'Electrical' | 'HVAC' | 'Appliance' | 'Carpentry' | 'Other';
+    status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
     date: string;
     priority: 'LOW' | 'MEDIUM' | 'HIGH';
 }
@@ -31,8 +33,11 @@ export interface Announcement {
     id: string;
     title: string;
     content: string;
+    category: 'General' | 'Urgent' | 'Event' | 'Maintenance';
     date: string;
     author: string;
+    isPinned?: boolean;
+    readBy?: string[]; // Array of user IDs
 }
 
 export interface Payment {
@@ -73,13 +78,69 @@ export const MOCK_RECORDS = {
         { id: '5', number: 'D-104', floor: '1st', type: '2BHK', status: 'MAINTENANCE' },
     ],
     maintenanceRequests: [
-        { id: '1', residentName: 'John Doe', unit: 'A-101', title: 'Leaky Faucet', status: 'PENDING', date: '2026-01-25', priority: 'MEDIUM' },
-        { id: '2', residentName: 'Jane Smith', unit: 'B-205', title: 'Broken AC', status: 'IN_PROGRESS', date: '2026-01-26', priority: 'HIGH' },
-        { id: '3', residentName: 'Sarah Connor', unit: 'A-304', title: 'Light bulb replacement', status: 'COMPLETED', date: '2026-01-20', priority: 'LOW' },
+        { 
+            id: '1', 
+            residentName: 'John Doe', 
+            unit: 'A-101', 
+            title: 'Leaky Faucet', 
+            description: 'The kitchen faucet is leaking constantly, causing water waste.',
+            category: 'Plumbing',
+            status: 'PENDING', 
+            date: '2026-01-25', 
+            priority: 'MEDIUM' 
+        },
+        { 
+            id: '2', 
+            residentName: 'Jane Smith', 
+            unit: 'B-205', 
+            title: 'Broken AC', 
+            description: 'The air conditioning unit in the master bedroom stopped blowing cold air.',
+            category: 'HVAC',
+            status: 'IN_PROGRESS', 
+            date: '2026-01-26', 
+            priority: 'HIGH' 
+        },
+        { 
+            id: '3', 
+            residentName: 'Sarah Connor', 
+            unit: 'A-304', 
+            title: 'Light bulb replacement', 
+            description: 'The hallway light bulb has burned out and needs replacement.',
+            category: 'Electrical',
+            status: 'COMPLETED', 
+            date: '2026-01-20', 
+            priority: 'LOW' 
+        },
     ],
     announcements: [
-        { id: '1', title: 'Annual Fire Drill', content: 'Scheduled for next Saturday at 10 AM. Please participate.', date: '2026-01-27', author: 'Management' },
-        { id: '2', title: 'New Gym Rules', content: 'Gym hours have been extended to 11 PM.', date: '2026-01-24', author: 'Admin' },
+        { 
+            id: '1', 
+            title: 'Annual Fire Drill', 
+            content: 'Scheduled for next Saturday at 10 AM. Please participate for community safety.', 
+            category: 'Urgent',
+            date: '2026-01-27', 
+            author: 'Management',
+            isPinned: true,
+            readBy: ['res-1']
+        },
+        { 
+            id: '2', 
+            title: 'New Gym Rules', 
+            content: 'Gym hours have been extended to 11 PM. Please ensure you wipe down equipment after use.', 
+            category: 'General',
+            date: '2026-01-24', 
+            author: 'Admin',
+            readBy: []
+        },
+        { 
+            id: '3', 
+            title: 'Water Maintenance Notice', 
+            content: 'Water supply will be temporarily interrupted on Wednesday from 2 PM to 4 PM for pipe maintenance.', 
+            category: 'Maintenance',
+            date: '2026-01-28', 
+            author: 'Facilities',
+            readBy: []
+        },
     ],
     payments: [
         { id: '1', residentName: 'John Doe', amount: 1200, date: '2026-01-01', status: 'PAID', type: 'RENT' },

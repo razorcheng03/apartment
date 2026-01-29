@@ -8,7 +8,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
+import { login } from '@/lib/actions/auth';
+import { useToast } from '@/components/ui/toast';
+
 export default function LoginPage() {
+    const { toast } = useToast();
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
@@ -36,11 +40,28 @@ export default function LoginPage() {
         e.preventDefault();
         if (validateForm()) {
             setIsLoading(true);
-            // Simulate API call
-            setTimeout(() => {
+            const formDataObj = new FormData();
+            formDataObj.append('email', formData.email);
+            formDataObj.append('password', formData.password);
+            
+            try {
+                const result = await login(formDataObj);
+                if (result?.error) {
+                    toast({
+                        title: "Login Failed",
+                        description: result.error,
+                        variant: "error"
+                    });
+                }
+            } catch (error) {
+                toast({
+                    title: "Error",
+                    description: "Something went wrong. Please try again.",
+                    variant: "error"
+                });
+            } finally {
                 setIsLoading(false);
-                alert('Login successful! (Simulation)');
-            }, 1500);
+            }
         }
     };
 
@@ -147,7 +168,7 @@ export default function LoginPage() {
                     </form>
 
                     <p className="text-center text-gray-600">
-                        Don't have an account?{' '}
+                        Don&apos;t have an account?{' '}
                         <Link
                             href="/SIGN-UP"
                             className="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors"
@@ -170,7 +191,7 @@ export default function LoginPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/40 via-transparent to-transparent" />
                 <div className="absolute bottom-12 left-12 right-12 text-white">
                     <div className="bg-white/10 backdrop-blur-md p-8 rounded-2xl border border-white/20">
-                        <h2 className="text-3xl font-bold mb-4 italic">"The simplest way to manage your modern lifestyle."</h2>
+                        <h2 className="text-3xl font-bold mb-4 italic">&quot;The simplest way to manage your modern lifestyle.&quot;</h2>
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-full bg-indigo-500 flex items-center justify-center font-bold text-xl">
                                 JD

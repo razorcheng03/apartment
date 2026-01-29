@@ -17,7 +17,7 @@ export default function AdminDashboard() {
         <div className="space-y-8 animate-in fade-in duration-500">
             <div>
                 <h1 className="text-2xl font-bold text-gray-900">Admin Overview</h1>
-                <p className="text-gray-500 mt-1">Welcome back, here's what's happening today.</p>
+                <p className="text-gray-500 mt-1">Welcome back, here&apos;s what&apos;s happening today.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

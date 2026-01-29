@@ -17,12 +17,18 @@ import {
 import { cn } from '@/lib/utils';
 import { Role } from '@/lib/mock-data';
 
+import { logout } from '@/lib/actions/auth';
+
 interface SidebarProps {
     role: Role;
 }
 
 export function Sidebar({ role }: SidebarProps) {
     const pathname = usePathname();
+
+    const handleLogout = async () => {
+        await logout();
+    };
 
     const adminLinks = [
         { name: 'Overview', href: '/dashboard/admin', icon: LayoutDashboard },
@@ -82,7 +88,10 @@ export function Sidebar({ role }: SidebarProps) {
             </div>
 
             <div className="mt-auto p-6 border-t border-gray-100">
-                <button className="flex items-center gap-3 px-3 py-2.5 w-full text-left text-sm font-medium text-red-500 hover:bg-red-50 rounded-xl transition-all">
+                <button 
+                    onClick={handleLogout}
+                    className="flex items-center gap-3 px-3 py-2.5 w-full text-left text-sm font-medium text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                >
                     <LogOut className="w-5 h-5" />
                     Logout
                 </button>
